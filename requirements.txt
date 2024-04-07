@@ -1,0 +1,7 @@
+Flask
+requests
+python-dotenv
+numpy
+tensorflow
+keras
+Pillow
