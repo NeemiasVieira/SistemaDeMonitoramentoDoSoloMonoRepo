@@ -12,8 +12,9 @@ client_id = os.getenv("CLIENT_ID")
 
 @app.route('/upload', methods=['POST'])
 def processarImagem():
+    print(request.files)
     if 'image' not in request.files:
-        return jsonify({'error': 'Nenhuma imagem fornecida'}), 400
+        return jsonify({'erro': 'Nenhuma imagem fornecida'}), 400
 
     image = request.files['image']
     upload_folder = './app/IA/uploads'
@@ -23,7 +24,7 @@ def processarImagem():
     resultado = processarImagemComIA()
     link = uploadImagem(image_path)
 
-    return jsonify({'resultado': resultado, 'link': link}), 200
+    return jsonify({'diagnostico': resultado, 'imagem': link}), 200
 
 def uploadImagem(image_path):
     try:
