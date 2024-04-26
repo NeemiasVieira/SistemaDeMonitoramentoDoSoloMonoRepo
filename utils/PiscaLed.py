@@ -24,7 +24,7 @@ def piscar_led(vezes=2, intervalo=0.5):
 def indica_envio_requisicao():
     piscar_led(vezes=2, intervalo=0.5)
 
-# Código principal (exemplo de uso)
+# Código principal em looping (exemplo de uso)
 if __name__ == '__main__':
     try:
         #Inicia o programa com o estado do led ativo (também pode ser colocado como última etapa para desmonstrar que todos os passos iniciais funcionaram bem)
