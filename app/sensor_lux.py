@@ -22,16 +22,14 @@ def read_light_level():
     light_level = ((data[0] << 8) + data[1]) / 1.2
     return light_level
 
-def main():
+def ler_sensor_lux():
     print("BH1750 Test begin")
     try:
-        while True:
-            setup()
-            lux = read_light_level()
-            print("Light: {} lx".format(lux)) #Light: 295.83333333333337 lx
-            time.sleep(1)
-    except KeyboardInterrupt:
-        pass
-
-if __name__ == "__main__":
-    main()
+        setup()
+        lux = read_light_level()
+        return format(lux,".2f")
+      
+    except Exception as e:
+        # Captura qualquer exceção
+        print(f"Ocorreu um erro ao ler o sensor: {e}")
+        return None
