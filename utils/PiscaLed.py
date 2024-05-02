@@ -1,5 +1,7 @@
 import RPi.GPIO as GPIO
 import time
+import schedule
+import time
 
 LED_PIN = 18  #Substituir pela porta que o led foi conectado
 
@@ -40,3 +42,14 @@ if __name__ == '__main__':
 
     finally:
         GPIO.cleanup()
+        
+# Agenda a execução da função `indica_envio_requisicao` diariamente às 10h da manhã
+schedule.every().day.at("10:00").do(indica_envio_requisicao)
+
+# Agenda a execução da função `indica_envio_requisicao` a cada 5 minutos
+schedule.every(5).minutes.do(indica_envio_requisicao)
+
+# Mantém o programa em execução para que o agendador possa funcionar
+while True:
+    schedule.run_pending()
+    time.sleep(1)  # Verifica as tarefas pendentes a cada 1 segundo
