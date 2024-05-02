@@ -1,0 +1,25 @@
+import serial
+print("teste")
+# Configuração da porta serial
+ser = serial.Serial('/dev/ttyUSB0', 9600)  # Altere '/dev/ttyUSB0' para a porta serial correta e a taxa de baud desejada
+
+# Endereço do sensor e comando de leitura
+endereco_hexadecimal = b'\x00\x03'
+comando_leitura = b'\x03'  # Comando de leitura (pode variar de acordo com o seu sensor)
+
+# Enviando o comando de leitura para o sensor
+comando = endereco_hexadecimal + comando_leitura
+ser.write(comando)
+
+# Lendo a resposta do sensor (2 bytes)
+resposta = ser.read(2)
+
+# Calculando o valor do pH
+valor_pH = int.from_bytes(resposta, byteorder='big') / 10.0
+
+# Imprimindo o valor lido
+print(f'Valor de pH: {valor_pH}')
+
+# Fechando a porta serial
+ser.close()
+

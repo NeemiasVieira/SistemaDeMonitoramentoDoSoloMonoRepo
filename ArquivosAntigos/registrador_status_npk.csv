@@ -1,0 +1,16 @@
+#Protocolo Modbus RTU
+
+endereço_registrador,endereço_plc,Definição,Bytes,Conteúdo,Estado
+"0000",40001,"umidade",2,"0.1%RH",leitura
+0001,40002,temperatura,2,0.1°C,leitura
+0002,40003,condutividade,2,1,leitura
+0003,40004,pH,2,0.1,leitura
+0007,40008,salinidade,2,1,leitura
+0008,40009,TDS,2,1,read
+0022,40035,fator de condutividade,2,0-100 correspode a 0.0%-10.0% | default 0.0%,leitura/escrita
+0023,40036,fator de salinidade,2,0-100 corresponde a 0.00-1.00 | default 55 (0.55),leitura/escrita
+0024,40037,fator do TDS,2,0-100 corresponde a 0.00-1.00 | default 50 (0.5), leitura/escrita
+0050,40081,offset de temperatura,2,0.1,leitura/escrita
+0051,40082,offset de umidade,2,0.1,leitura/escrita
+0052,40083,offset de condutividade,2,1,leitura/escrita
+0053,40084,offset de pH,2,1,leitura/escrita
