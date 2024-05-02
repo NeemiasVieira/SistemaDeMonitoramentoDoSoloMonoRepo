@@ -3,7 +3,7 @@ import time
 import schedule
 import time
 
-LED_PIN = 18  #Substituir pela porta que o led foi conectado
+LED_PIN = 16  #Substituir pela porta que o led foi conectado
 
 GPIO.setmode(GPIO.BCM)  
 GPIO.setup(LED_PIN, GPIO.OUT)
@@ -24,7 +24,7 @@ def piscar_led(vezes=2, intervalo=0.5):
         time.sleep(intervalo)
 
 def indica_envio_requisicao():
-    piscar_led(vezes=2, intervalo=0.5)
+    piscar_led(vezes=2, intervalo=0.2)
 
 # Código principal em looping (exemplo de uso)
 if __name__ == '__main__':
@@ -32,8 +32,19 @@ if __name__ == '__main__':
         #Inicia o programa com o estado do led ativo (também pode ser colocado como última etapa para desmonstrar que todos os passos iniciais funcionaram bem)
         ligar_led()
 
+        # Agenda a execução da função `indica_envio_requisicao` diariamente às 10h da manhã
+        schedule.every().day.at("10:00").do(indica_envio_requisicao)
+
+        # Agenda a execução da função `indica_envio_requisicao` a cada 5 minutos
+        schedule.every(5).seconds.do(indica_envio_requisicao)
+
         # Exemplo de uso: Piscar o LED duas vezes para indicar o envio de uma requisição
         indica_envio_requisicao()
+
+        # Mantém o programa em execução para que o agendador possa funcionar
+        while True:
+            schedule.run_pending()
+            time.sleep(1)  # Verifica as tarefas pendentes a cada 1 segundo
         
         
     except KeyboardInterrupt:
@@ -43,13 +54,3 @@ if __name__ == '__main__':
     finally:
         GPIO.cleanup()
         
-# Agenda a execução da função `indica_envio_requisicao` diariamente às 10h da manhã
-schedule.every().day.at("10:00").do(indica_envio_requisicao)
-
-# Agenda a execução da função `indica_envio_requisicao` a cada 5 minutos
-schedule.every(5).minutes.do(indica_envio_requisicao)
-
-# Mantém o programa em execução para que o agendador possa funcionar
-while True:
-    schedule.run_pending()
-    time.sleep(1)  # Verifica as tarefas pendentes a cada 1 segundo
