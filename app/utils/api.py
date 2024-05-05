@@ -3,6 +3,36 @@ import requests
 email = "coloque o e-mail aqui"
 senha = "coloque a senha aqui"
 
+def verificarSolicitacao(idPlanta): 
+    api_url = 'http://172.212.98.90:3333/graphql'
+    token = getToken()
+    query = '''
+       query Query($idPlanta: String!) {
+         getSolicitacaoRegistro(idPlanta: $idPlanta)
+            } '''
+
+    variables = { 'idPlanta': idPlanta }
+    json_data = {'query': query,'variables': variables }
+    headers = {'Content-Type': 'application/json','Authorization': token }
+
+    return requests.post(api_url, json=json_data, headers=headers).json().get('data').get('getSolicitacaoRegistro')
+
+def confirmarSolicitacao(idPlanta):
+    api_url = 'http://172.212.98.90:3333/graphql'
+    token = getToken()
+    mutation = '''
+       mutation Mutation($idPlanta: String!, $confirmado: Boolean) {
+            updateSolicitacaoRegistro(idPlanta: $idPlanta, confirmado: $confirmado) {
+                solicitacaoNovoRegistro
+                    }
+                        } '''
+
+    variables = { 'idPlanta': idPlanta, 'confirmado': True }
+    json_data = {'query': mutation,'variables': variables }
+    headers = {'Content-Type': 'application/json','Authorization': token }
+
+    return requests.post(api_url, json=json_data, headers=headers).json().get('data').get('updateSolicitacaoRegistro').get('solicitacaoNovoRegistro')
+
 #Funcao que envia o registro
 def enviarRegistro(idPlanta, nitrogenio, fosforo, potassio, umidade, temperatura, pH, luz, imagem = None, diagnostico = None):
     api_url = 'http://172.212.98.90:3333/graphql'

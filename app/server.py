@@ -3,9 +3,11 @@ import time
 import schedule
 from app.utils.sensor_lux import ler_sensor_lux
 from utils.indicador_led import indica_envio_requisicao, ligar_led, desligar_led
-from utils.api import uploadImagem, enviarRegistro
+from utils.api import uploadImagem, enviarRegistro, confirmarSolicitacao, verificarSolicitacao
 from utils.sensor_npk import ler_sensor_NPK
 from utils.camera import capturar_foto
+
+idPlanta = '652955aa670b516ea2a104d0'
 
 def executar_leituras():
     capturar_foto()
@@ -13,9 +15,19 @@ def executar_leituras():
     nitrogenio, fosforo, potassio, umidade, temperatura, pH = ler_sensor_NPK().values()
     luz = ler_sensor_lux()
     luz = str(luz)
-    idPlanta = '652955aa670b516ea2a104d0'
     indica_envio_requisicao()
     resposta = enviarRegistro(idPlanta, nitrogenio, fosforo, potassio, umidade, temperatura, pH, luz, imagem, diagnostico)
+    return resposta
+
+def verificarPendencias():
+    indica_envio_requisicao()
+
+    if (verificarSolicitacao(idPlanta) == "aguardando"):
+        resposta = executar_leituras()
+        
+        if(resposta):
+            indica_envio_requisicao()
+            confirmarSolicitacao(idPlanta)
     
 
 # Código principal em looping (exemplo de uso)
@@ -28,7 +40,7 @@ if __name__ == '__main__':
         schedule.every().day.at("10:00").do(executar_leituras)
 
         # Agenda a execução da função `indica_envio_requisicao` a cada 5 minutos
-        schedule.every(5).seconds.do(executar_leituras)
+        schedule.every(5).seconds.do(verificarPendencias)
 
         # Mantém o programa em execução para que o agendador possa funcionar
         while True:
