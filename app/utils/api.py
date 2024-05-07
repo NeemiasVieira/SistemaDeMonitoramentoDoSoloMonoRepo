@@ -42,7 +42,7 @@ def enviarRegistro(idPlanta, nitrogenio, fosforo, potassio, umidade, temperatura
             createRecord(idPlanta: $idPlanta, nitrogenio: $nitrogenio, fosforo: $fosforo, potassio: $potassio, umidade: $umidade, temperatura: $temperatura, pH: $pH, luz: $luz, imagem: $imagem, diagnostico: $diagnostico) {
                 id idPlanta nitrogenio fosforo potassio umidade temperatura pH luz dataDeRegistro imagem diagnostico } } '''
 
-    variables = { 'idPlanta': idPlanta,'nitrogenio': nitrogenio,'fosforo': fosforo,'potassio': potassio,'umidade': umidade,'temperatura': temperatura, 'pH': pH, 'luz': luz, 'imagem': imagem, 'diagnostico': diagnostico }
+    variables = { 'idPlanta': idPlanta,'nitrogenio': nitrogenio,'fosforo': fosforo,'potassio': potassio,'umidade': umidade,'temperatura': temperatura, 'pH': pH, 'lux': luz, 'imagem': imagem, 'diagnostico': diagnostico }
     json_data = {'query': mutation,'variables': variables }
     headers = {'Content-Type': 'application/json','Authorization': token }
 
