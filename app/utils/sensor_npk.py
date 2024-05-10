@@ -22,14 +22,6 @@ def ler_sensor_NPK():
         pH = instrument.read_register(3, functioncode=3, signed=True) * 0.1
         pH = round(pH,1)
 
-        # # Imprime os resultados
-        # print("Umidade: {}%RH".format(umidade))
-        # print("Temperatura: {}°C".format(temperatura))
-        # print("pH: {}".format(pH))
-        # print("Nitrogênio(N): {}mg/kg".format(nitrogênio))
-        # print("Fósforo(P): {}mg/kg".format(fósforo))
-        # print("Potássio(K): {}mg/kg".format(potássio))
-
         # Definir o Slave ID
         novo_slave_id = 2
         instrument.write_register(40081, novo_slave_id, functioncode=6)
@@ -61,3 +53,7 @@ def ler_sensor_NPK():
         print("Erro na comunicação serial:", str(e))
     except Exception as e:
         print("Erro desconhecido:", str(e))
+
+#Teste do sensor
+#resposta = ler_sensor_NPK()
+#print(resposta)
