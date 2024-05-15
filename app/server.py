@@ -1,7 +1,7 @@
 import RPi.GPIO as GPIO
 import time
 import schedule
-from app.utils.sensor_lux import ler_sensor_lux
+from utils.sensor_lux import ler_sensor_lux
 from utils.indicador_led import indica_envio_requisicao, ligar_led, desligar_led
 from utils.api import uploadImagem, enviarRegistro, confirmarSolicitacao, verificarSolicitacao
 from utils.sensor_npk import ler_sensor_NPK
@@ -11,7 +11,7 @@ idPlanta = '652955aa670b516ea2a104d0'
 
 def executar_leituras():
     capturar_foto()
-    imagem, diagnostico = uploadImagem('./image/image.jpg')
+    imagem, diagnostico = uploadImagem('image/image.jpg')
     nitrogenio, fosforo, potassio, umidade, temperatura, pH = ler_sensor_NPK().values()
     luz = ler_sensor_lux()
     luz = str(luz)

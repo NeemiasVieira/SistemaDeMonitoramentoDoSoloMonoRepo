@@ -1,40 +1,35 @@
-from picamera import PiCamera
-import time
+import cv2
 import os
-#sudo vcgencmd get_camera
-
-# Inicializa a câmera
-camera = PiCamera()
-
-# Define o diretório de saída para salvar as imagens
-diretorio = "../image"  # Substitua pelo caminho do diretório desejado
-
-# Função para capturar uma foto
-# def capturar_foto():
-
-#     # Define o nome do arquivo com base no timestamp
-#     nome_arquivo = f"image.jpg"
-    
-#     # Cria o caminho completo para o arquivo
-#     caminho_arquivo = os.path.join(diretorio, nome_arquivo)
-    
-#     # Captura a foto e salva no diretório especificado
-#     camera.capture(caminho_arquivo)
+import time
 
 def capturar_foto():
-    try:
-        camera = PiCamera()
-        imagem = f"imagem.jpg"
-        camera.capture(imagem)
-        camera.close()
-        if not os.path.exists("fotos"):
-            os.makedirs("fotos")
-        if imagem:
-            os.replace(imagem, os.path.join("fotos", imagem))
-        return imagem
-    except Exception as e:
-        print("Erro ao tirar/armazenar foto:", e)
-        return None
 
+    diretorio_pai = os.path.dirname(os.getcwd())
+    diretorio_image = os.path.join(diretorio_pai, "image")
 
-capturar_foto()
+    if not os.path.exists(diretorio_image):
+        os.makedirs(diretorio_image)
+
+    webcam = cv2.VideoCapture(0)
+
+    time.sleep(1)
+
+    retorno, imagem = webcam.read()
+
+    if retorno:
+        nome_arquivo = f"image.jpg"
+        caminho_arquivo = os.path.join(diretorio_image, nome_arquivo)
+        cv2.imwrite(caminho_arquivo, imagem)
+        webcam.release()
+
+        return True
+    else:
+        print("Erro ao capturar a imagem.")
+        return False
+
+foto_capturada = capturar_foto()
+
+if foto_capturada:
+    print("Foto capturada!")
+else:
+    print("Não foi possível capturar a foto.")

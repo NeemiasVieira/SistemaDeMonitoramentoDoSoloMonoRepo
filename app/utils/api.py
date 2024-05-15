@@ -93,7 +93,7 @@ pH = '7'
 luz = '10000'
 
 #Atençao, o caminho da imagem passado para uploadImagem deve ser relativo a funçao de uploadImagem
-imagem, diagnostico = uploadImagem('coloque aqui o caminho da imagem')
+imagem, diagnostico = uploadImagem('image/image.jpg')
 token = getToken()
 
 #O registro pode ser enviado com ou sem imagem e diagnostico
