@@ -1,11 +1,11 @@
 import RPi.GPIO as GPIO
 import time
 import schedule
-from utils.sensor_lux import ler_sensor_lux
-from utils.indicador_led import indica_envio_requisicao, ligar_led, desligar_led
-from utils.api import uploadImagem, enviarRegistro, confirmarSolicitacao, verificarSolicitacao
-from utils.sensor_npk import ler_sensor_NPK
-from utils.camera import capturar_foto
+from services.sensor_lux import ler_sensor_lux
+from services.indicador_led import indica_envio_requisicao, ligar_led, desligar_led
+from services.api import uploadImagem, enviarRegistro, confirmarSolicitacao, verificarSolicitacao
+from services.sensor_npk import ler_sensor_NPK
+from services.camera import capturar_foto
 
 idPlanta = '652955aa670b516ea2a104d0'
 
