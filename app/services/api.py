@@ -1,8 +1,8 @@
 import requests
 from logger import logger
 
-email = "neemias.vieira@live.com"
-senha = "Batata123@"
+email = ""
+senha = ""
 
 def verificarSolicitacao(idPlanta): 
     try:
