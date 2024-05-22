@@ -22,10 +22,6 @@ def ler_sensor_NPK():
         pH = instrument.read_register(3, functioncode=3, signed=True) * 0.1
         pH = round(pH,1)
 
-        # Definir o Slave ID
-        novo_slave_id = 2
-        instrument.write_register(40081, novo_slave_id, functioncode=6)
-
         # Consulta ao Slave ID
         consulta_slave_id = instrument.read_register(41257, functioncode=3)
         print("Slave ID atual: {}".format(consulta_slave_id))

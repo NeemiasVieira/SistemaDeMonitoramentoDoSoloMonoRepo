@@ -1,7 +1,7 @@
 import requests
 
-email = "coloque o e-mail aqui"
-senha = "coloque a senha aqui"
+email = ""
+senha = ""
 
 def verificarSolicitacao(idPlanta): 
     api_url = 'http://172.212.98.90:3333/graphql'
@@ -38,8 +38,8 @@ def enviarRegistro(idPlanta, nitrogenio, fosforo, potassio, umidade, temperatura
     api_url = 'http://172.212.98.90:3333/graphql'
     token = getToken()
     mutation = '''
-        mutation Mutation($idPlanta: String!, $nitrogenio: String!, $fosforo: String!, $potassio: String!, $umidade: String!, $temperatura: String!, $pH: String!, $luz: String!, $imagem: String, $diagnostico: String) {
-            createRecord(idPlanta: $idPlanta, nitrogenio: $nitrogenio, fosforo: $fosforo, potassio: $potassio, umidade: $umidade, temperatura: $temperatura, pH: $pH, luz: $luz, imagem: $imagem, diagnostico: $diagnostico) {
+        mutation Mutation($idPlanta: String!, $nitrogenio: String!, $fosforo: String!, $potassio: String!, $umidade: String!, $temperatura: String!, $pH: String!, $lux: String!, $imagem: String, $diagnostico: String) {
+            createRecord(idPlanta: $idPlanta, nitrogenio: $nitrogenio, fosforo: $fosforo, potassio: $potassio, umidade: $umidade, temperatura: $temperatura, pH: $pH, lux: $lux, imagem: $imagem, diagnostico: $diagnostico) {
                 id idPlanta nitrogenio fosforo potassio umidade temperatura pH luz dataDeRegistro imagem diagnostico } } '''
 
     variables = { 'idPlanta': idPlanta,'nitrogenio': nitrogenio,'fosforo': fosforo,'potassio': potassio,'umidade': umidade,'temperatura': temperatura, 'pH': pH, 'lux': luz, 'imagem': imagem, 'diagnostico': diagnostico }

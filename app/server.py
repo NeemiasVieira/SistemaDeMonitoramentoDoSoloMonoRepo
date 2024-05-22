@@ -13,21 +13,26 @@ def executar_leituras():
     capturar_foto()
     imagem, diagnostico = uploadImagem('image/image.jpg')
     nitrogenio, fosforo, potassio, umidade, temperatura, pH = ler_sensor_NPK().values()
-    luz = ler_sensor_lux()
-    luz = str(luz)
+    # luz = ler_sensor_lux()
+    # luz = str(luz)
+    luz = "1000"
     indica_envio_requisicao()
     resposta = enviarRegistro(idPlanta, nitrogenio, fosforo, potassio, umidade, temperatura, pH, luz, imagem, diagnostico)
-    return resposta
+    return resposta.json()
 
 def verificarPendencias():
     indica_envio_requisicao()
 
     if (verificarSolicitacao(idPlanta) == "aguardando"):
+        print(verificarSolicitacao(idPlanta))
         resposta = executar_leituras()
+        print(resposta)
         
-        if(resposta):
+        if(resposta is not None):
+            print("enviando confirmacao...")
             indica_envio_requisicao()
-            confirmarSolicitacao(idPlanta)
+            respostaConfirmacao = confirmarSolicitacao(idPlanta)
+            print(respostaConfirmacao)
     
 
 # Código principal em looping (exemplo de uso)
@@ -37,15 +42,15 @@ if __name__ == '__main__':
         ligar_led()
 
         # Agenda a execução da função `indica_envio_requisicao` diariamente às 10h da manhã
-        schedule.every().day.at("10:00").do(executar_leituras)
+        schedule.every().day.at("10:00").do(verificarPendencias)
 
         # Agenda a execução da função `indica_envio_requisicao` a cada 5 minutos
-        schedule.every(5).seconds.do(verificarPendencias)
+        schedule.every(30).seconds.do(verificarPendencias)
 
         # Mantém o programa em execução para que o agendador possa funcionar
         while True:
             schedule.run_pending()
-            print(ler_sensor_lux())
+            # print(ler_sensor_lux())
             time.sleep(1)  # Verifica as tarefas pendentes a cada 1 segundo
         
     except KeyboardInterrupt:
