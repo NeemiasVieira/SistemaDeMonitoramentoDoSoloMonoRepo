@@ -1,5 +1,6 @@
 import RPi.GPIO as GPIO
 import time
+from logger import logger
 
 LED_PIN = 16  #Substituir pela porta que o led foi conectado
 
@@ -25,4 +26,13 @@ def piscar_led(vezes=2, intervalo=0.5):
         time.sleep(intervalo)
 
 def indica_envio_requisicao():
+    logger.info("LED - Indicando envio da requisição")
     piscar_led(vezes=2, intervalo=0.2)
+
+
+if __name__ == "__main__":
+    i = 0
+    while(c < 10):
+        indica_envio_requisicao()
+        time.sleep(5)
+        c = c+1

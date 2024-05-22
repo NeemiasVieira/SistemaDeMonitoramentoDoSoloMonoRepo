@@ -6,60 +6,52 @@ from services.indicador_led import indica_envio_requisicao, ligar_led, desligar_
 from services.api import uploadImagem, enviarRegistro, confirmarSolicitacao, verificarSolicitacao
 from services.sensor_npk import ler_sensor_NPK
 from services.camera import capturar_foto
+from services.logger import logger
 
 idPlanta = '652955aa670b516ea2a104d0'
 
 def executar_leituras():
+    logger.info("Executando rotina de leituras...")
     capturar_foto()
     imagem, diagnostico = uploadImagem('image/image.jpg')
-    nitrogenio, fosforo, potassio, umidade, temperatura, pH = ler_sensor_NPK().values()
-    # luz = ler_sensor_lux()
-    # luz = str(luz)
-    luz = "1000"
+    nitrogenio, fosforo, potassio, umidade, temperatura, pH = ler_sensor_NPK()
+    luz = ler_sensor_lux()
     indica_envio_requisicao()
     resposta = enviarRegistro(idPlanta, nitrogenio, fosforo, potassio, umidade, temperatura, pH, luz, imagem, diagnostico)
     return resposta.json()
 
 def verificarPendencias():
+    logger.info("Executando rotina de verificação de pendências...")
     indica_envio_requisicao()
+    verificacao = verificarSolicitacao(idPlanta)
+    logger.debug(f"Status da verificação: ${verificacao}")
 
-    if (verificarSolicitacao(idPlanta) == "aguardando"):
-        print(verificarSolicitacao(idPlanta))
+    if (verificacao == "aguardando"):
         resposta = executar_leituras()
-        print(resposta)
         
         if(resposta is not None):
-            print("enviando confirmacao...")
             indica_envio_requisicao()
             respostaConfirmacao = confirmarSolicitacao(idPlanta)
-            print(respostaConfirmacao)
+            logger.debug(f"Resposta da confirmação: ${respostaConfirmacao}")
     
-
-# Código principal em looping (exemplo de uso)
 if __name__ == '__main__':
+    logger.info("Servidor iniciado com sucesso 🚀")
     try:
-        #Inicia o programa com o estado do led ativo (também pode ser colocado como última etapa para desmonstrar que todos os passos iniciais funcionaram bem)
-        ligar_led()
-
-        # Agenda a execução da função `indica_envio_requisicao` diariamente às 10h da manhã
         schedule.every().day.at("10:00").do(verificarPendencias)
 
-        # Agenda a execução da função `indica_envio_requisicao` a cada 5 minutos
         schedule.every(30).seconds.do(verificarPendencias)
 
-        # Mantém o programa em execução para que o agendador possa funcionar
         while True:
             schedule.run_pending()
-            # print(ler_sensor_lux())
-            time.sleep(1)  # Verifica as tarefas pendentes a cada 1 segundo
+            time.sleep(1)  
         
     except KeyboardInterrupt:
-        print("Usuário solicitou o desligamento do servidor")
+        logger.debug("Servidor finalizado com sucesso ❌")
         desligar_led()
 
     except Exception as e:
         # Captura qualquer exceção
-        print(f"Ocorreu um com o servidor: {e}")
+        logger.critical(f"Ocorreu um com o servidor: {e}")
         desligar_led()
         
     finally:

@@ -1,4 +1,5 @@
 import minimalmodbus
+from logger import logger
 
 def ler_sensor_NPK():
 
@@ -6,8 +7,9 @@ def ler_sensor_NPK():
     instrument = minimalmodbus.Instrument('/dev/ttyUSB0', 1)
     instrument.serial.baudrate = 4800  # Taxa de transmissão padrão do sensor (datasheet)
     instrument.serial.timeout = 1  # Tempo limite para leitura
-
+    
     try:
+        logger.info("Iniciando leitura do sensor NPK...")
         # Leitura dos registros
         nitrogênio = (instrument.read_register(4, functioncode=3, signed=True) * 0.01) + 0.0
         fósforo = (instrument.read_register(5, functioncode=3, signed=True) * 0.01) + 0.0
@@ -22,10 +24,6 @@ def ler_sensor_NPK():
         pH = instrument.read_register(3, functioncode=3, signed=True) * 0.1
         pH = round(pH,1)
 
-        # Consulta ao Slave ID
-        consulta_slave_id = instrument.read_register(41257, functioncode=3)
-        print("Slave ID atual: {}".format(consulta_slave_id))
-
         return {
             "nitrogenio": str(nitrogênio),
             "fosforo": str(fósforo),
@@ -33,23 +31,24 @@ def ler_sensor_NPK():
             "umidade": str(umidade),
             "temperatura": str(temperatura),
             "pH": str(pH)
-        }
+        }.values()
 
     except IOError as e:
-        print("Erro de E/S do sensor NPK:", str(e))
+        logger.error("Erro de E/S do sensor NPK:", str(e))
     except ValueError as e:
-        print("Erro de Valor:", str(e))
+        logger.error("Erro de Valor:", str(e))
     except minimalmodbus.NoResponseError:
-        print("Não houve resposta do dispositivo Modbus.")
+        logger.error("Não houve resposta do dispositivo Modbus.")
     except minimalmodbus.InvalidResponseError:
-        print("Resposta inválida do dispositivo Modbus.")
+        logger.error("Resposta inválida do dispositivo Modbus.")
     except minimalmodbus.CannotWriteToInstrument as e:
-        print("Não foi possível escrever no dispositivo Modbus:", str(e))
+        logger.error("Não foi possível escrever no dispositivo Modbus:", str(e))
     except minimalmodbus.SerialException as e:
-        print("Erro na comunicação serial:", str(e))
+        logger.error("Erro na comunicação serial:", str(e))
     except Exception as e:
-        print("Erro desconhecido:", str(e))
+        logger.error("Erro desconhecido:", str(e))
 
-#Teste do sensor
-#resposta = ler_sensor_NPK()
-#print(resposta)
+
+if __name__ == "__main__":
+    resposta = ler_sensor_NPK()
+    logger.debug(resposta)

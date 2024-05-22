@@ -1,5 +1,6 @@
 import smbus
 import time
+from logger import logger
 
 # Define o endereço do sensor BH1750
 BH1750_ADDR = 0x23
@@ -23,13 +24,18 @@ def read_light_level():
     return light_level
 
 def ler_sensor_lux():
-    print("BH1750 Test begin")
+    logger.info("Leitura do sensor de luz iniciada...")
     try:
         setup()
         lux = read_light_level()
-        return format(lux,".2f")
+        return str(format(lux,".2f"))
       
     except Exception as e:
         # Captura qualquer exceção
-        print(f"Ocorreu um erro ao ler o sensor: {e}")
+        logger.error("Ocorreu um erro ao ler o sensor de luz")
+        print(e)
         return None
+    
+if __name__ == "__main__":
+    leitura_do_sensor = ler_sensor_lux()
+    logger.debug(leitura_do_sensor)
