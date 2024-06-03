@@ -2,7 +2,7 @@ import requests
 from services.logger import logger
 
 email = "neemias.vieira@live.com"
-senha = ""
+senha = "Batata123@"
 
 def verificarSolicitacao(idPlanta): 
     try:

@@ -24,7 +24,7 @@ def verificarPendencias():
     logger.info("Executando rotina de verificação de pendências...")
     indica_envio_requisicao()
     verificacao = verificarSolicitacao(idPlanta)
-    logger.debug(f"Status da verificação: ${verificacao}")
+    logger.debug(f"Status da verificação: {verificacao}")
 
     if (verificacao == "aguardando"):
         resposta = executar_leituras()
@@ -55,6 +55,6 @@ if __name__ == '__main__':
         desligar_led()
         
     finally:
-        piscar_led(3, 2)
+        piscar_led(3, 1)
         GPIO.cleanup()
         

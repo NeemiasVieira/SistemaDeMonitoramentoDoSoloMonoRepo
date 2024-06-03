@@ -11,9 +11,9 @@ def ler_sensor_NPK():
     try:
         logger.info("Iniciando leitura do sensor NPK...")
         # Leitura dos registros
-        nitrogênio = (instrument.read_register(4, functioncode=3, signed=True)) + 0.0
-        fósforo = (instrument.read_register(5, functioncode=3, signed=True)) + 0.0
-        potássio = (instrument.read_register(6, functioncode=3, signed=True)) + 0.0
+        nitrogênio = (instrument.read_register(4, functioncode=3, signed=True))
+        fósforo = (instrument.read_register(5, functioncode=3, signed=True))
+        potássio = (instrument.read_register(6, functioncode=3, signed=True))
 
         umidade = instrument.read_register(0, functioncode=4, signed=True) * 0.1
         umidade = round(umidade, 1)
