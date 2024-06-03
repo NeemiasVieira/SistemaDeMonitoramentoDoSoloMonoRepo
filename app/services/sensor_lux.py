@@ -1,6 +1,6 @@
 import smbus
 import time
-from logger import logger
+from services.logger import logger
 
 # Define o endereço do sensor BH1750
 BH1750_ADDR = 0x23

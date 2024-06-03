@@ -1,11 +1,11 @@
 import cv2
 import os
 import time
-from logger import logger
+from services.logger import logger
 
 def capturar_foto():
     diretorio_pai = os.path.dirname(os.getcwd())
-    diretorio_image = os.path.join(diretorio_pai, "app" ,"image")
+    diretorio_image = os.path.join(diretorio_pai, "SensorMonitoramento", "app" ,"image")
 
     if not os.path.exists(diretorio_image):
         os.makedirs(diretorio_image)

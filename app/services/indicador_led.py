@@ -1,8 +1,8 @@
 import RPi.GPIO as GPIO
 import time
-from logger import logger
+from services.logger import logger
 
-LED_PIN = 16  #Substituir pela porta que o led foi conectado
+LED_PIN = 18  #Substituir pela porta que o led foi conectado
 
 def setup_led():
     GPIO.setmode(GPIO.BCM)  

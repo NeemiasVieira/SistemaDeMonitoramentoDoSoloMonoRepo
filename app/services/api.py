@@ -1,7 +1,7 @@
 import requests
-from logger import logger
+from services.logger import logger
 
-email = ""
+email = "neemias.vieira@live.com"
 senha = ""
 
 def verificarSolicitacao(idPlanta): 
@@ -60,7 +60,7 @@ def enviarRegistro(idPlanta, nitrogenio, fosforo, potassio, umidade, temperatura
 
         logger.info("Enviando registro...")
 
-        return requests.post(api_url, json=json_data, headers=headers).json()
+        return requests.post(api_url, json=json_data, headers=headers)
     except Exception as e:
         logger.error("Erro ao enviar o registro")
         print(e)
