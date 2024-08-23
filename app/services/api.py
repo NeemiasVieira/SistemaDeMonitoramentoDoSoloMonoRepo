@@ -6,7 +6,7 @@ senha = "Batata123@"
 
 def verificarSolicitacao(idPlanta): 
     try:
-        api_url = 'http://172.212.98.90:3333/graphql'
+        api_url = 'https://sms.devneemiasvieira.com/api/'
         token = getToken()
         query = '''
         query Query($idPlanta: String!) {
@@ -25,7 +25,7 @@ def verificarSolicitacao(idPlanta):
 
 def confirmarSolicitacao(idPlanta):
     try: 
-        api_url = 'http://172.212.98.90:3333/graphql'
+        api_url = 'https://sms.devneemiasvieira.com/api/'
         token = getToken()
         mutation = '''
         mutation Mutation($idPlanta: String!, $confirmado: Boolean) {
@@ -47,7 +47,7 @@ def confirmarSolicitacao(idPlanta):
 #Funcao que envia o registro
 def enviarRegistro(idPlanta, nitrogenio, fosforo, potassio, umidade, temperatura, pH, luz, imagem = None, diagnostico = None):
     try:
-        api_url = 'http://172.212.98.90:3333/graphql'
+        api_url = 'https://sms.devneemiasvieira.com/api/'
         token = getToken()
         mutation = '''
             mutation Mutation($idPlanta: String!, $nitrogenio: String!, $fosforo: String!, $potassio: String!, $umidade: String!, $temperatura: String!, $pH: String!, $lux: String!, $imagem: String, $diagnostico: String) {
@@ -67,7 +67,7 @@ def enviarRegistro(idPlanta, nitrogenio, fosforo, potassio, umidade, temperatura
 
 #Funçao que retorna o token de acesso (login)
 def getToken():
-    api_url = 'http://172.212.98.90:3333/graphql'
+    api_url = 'https://sms.devneemiasvieira.com/api/'
     query = '''
         query Query($email: String!, $senha: String!) {
             getToken(email: $email, senha: $senha) {
@@ -92,7 +92,7 @@ def getToken():
 #Funçao responsável por executar o upload e processamento da imagem
 def uploadImagem(imagem_path):
     try:
-        api_url = 'http://172.212.98.90:8080/upload'
+        api_url = 'https://sms.devneemiasvieira.com/ia/upload'
         files = {'image': open(imagem_path, 'rb')}
 
         logger.info("Enviando upload da imagem...")
