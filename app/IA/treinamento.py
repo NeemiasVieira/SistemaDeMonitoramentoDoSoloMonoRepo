@@ -1,125 +1,71 @@
 import os
-import matplotlib.pyplot as plt
+import numpy as np
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Conv2D, MaxPooling2D, Flatten, Dense, Dropout, BatchNormalization
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
+from sklearn.utils.class_weight import compute_class_weight
 import tensorflow as tf
-from keras.models import Sequential
-from keras.layers import Conv2D, MaxPooling2D, Flatten, Dense, Rescaling
 
-tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.ERROR)
+def build_model(input_shape=(224, 224, 3)):
+    """
+    Constrói um modelo CNN com melhorias para maior precisão e generalização.
+    """
+    model = Sequential([
+        Conv2D(32, (3, 3), activation='relu', input_shape=input_shape),
+        BatchNormalization(),
+        MaxPooling2D((2, 2)),
+        Dropout(0.3),
 
-dataset_dir = os.path.join(os.getcwd(), 'basil_images')
+        Conv2D(64, (3, 3), activation='relu'),
+        BatchNormalization(),
+        MaxPooling2D((2, 2)),
+        Dropout(0.3),
 
-dataset_train_dir = os.path.join(dataset_dir, 'train')
-dataset_train_saudavel_len = len(os.listdir(os.path.join(dataset_train_dir, 'saudavel')))
-dataset_train_doente_len = len(os.listdir(os.path.join(dataset_train_dir, 'nao_saudavel')))
+        Conv2D(128, (3, 3), activation='relu'),
+        BatchNormalization(),
+        MaxPooling2D((2, 2)),
+        Dropout(0.4),
 
-dataset_validation_dir = os.path.join(dataset_dir, 'valid')
-dataset_validation_saudavel_len = len(os.listdir(os.path.join(dataset_validation_dir, 'saudavel')))
-dataset_validation_doente_len = len(os.listdir(os.path.join(dataset_validation_dir, 'nao_saudavel')))
+        Flatten(),
+        Dense(128, activation='relu'),
+        BatchNormalization(),
+        Dropout(0.5),
 
-print('Train saudavel:%s' % dataset_train_saudavel_len)
-print('Train doente:%s' % dataset_train_doente_len)
-print('validation saudavel:%s' % dataset_validation_saudavel_len)
-print('validation doente:%s' % dataset_validation_doente_len)
+        Dense(1, activation='sigmoid')  # Classificação binária
+    ])
+    model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy', 'Precision', 'Recall'])
+    return model
 
-image_width = 160
-image_height = 160
-image_color_channel = 3
-image_color_channel_size = 255
-image_size = (image_width, image_height)
-image_shape = image_size + (image_color_channel,)
+def train(data_dir, output_model_path):
+    """
+    Treina o modelo com os dados disponíveis.
+    """
+    datagen = ImageDataGenerator(validation_split=0.2, rescale=1./255)
 
-batch_size = 32 #quantidade de imagens que serao trasidas do dataset por vez
-epochs = 20 #numero de fezes que passara pelo dataset inteiro
-learning_rate = 0.0001 #taxa de aprendizagem
+    train_generator = datagen.flow_from_directory(
+        data_dir, target_size=(224, 224), batch_size=32, class_mode='binary', subset='training')
+    val_generator = datagen.flow_from_directory(
+        data_dir, target_size=(224, 224), batch_size=32, class_mode='binary', subset='validation')
 
-class_names = ["notHealth", "health"]
+    # Cálculo de pesos de classe para balanceamento
+    class_weights = compute_class_weight(
+        class_weight='balanced',
+        classes=np.unique(train_generator.classes),
+        y=train_generator.classes
+    )
+    class_weights = dict(enumerate(class_weights))
+    print(f"Pesos de classe: {class_weights}")
 
-dataset_train = tf.keras.preprocessing.image_dataset_from_directory(
-    dataset_train_dir,
-    image_size = image_size,
-    batch_size = batch_size,
-    shuffle = True
-)
+    model = build_model()
+    model.fit(
+        train_generator,
+        validation_data=val_generator,
+        epochs=20,  # Mais épocas para maior aprendizado
+        class_weight=class_weights  # Balanceamento artificial
+    )
+    model.save(output_model_path)
 
-dataset_validation = tf.keras.preprocessing.image_dataset_from_directory(
-    dataset_validation_dir,
-    image_size = image_size,
-    batch_size = batch_size,
-    shuffle = True
-)
-
-dataset_validation_cardinality = tf.data.experimental.cardinality(dataset_validation)
-dataset_validation_batches = dataset_validation_cardinality // 5
-
-dataset_test = dataset_validation.take(dataset_validation_batches)
-dataset_validation = dataset_validation.skip(dataset_validation_batches)
-
-print('Validation Dataset Cardinality: %d' % tf.data.experimental.cardinality(dataset_validation))
-print('Test Dataset Cardinality: %d' % tf.data.experimental.cardinality(dataset_test))
-
-def plot_dataset(dataset):
-    plt.gcf().clear()
-    plt.figure(figsize=(15,15))
-
-    for features, labels in dataset.take(1):
-        for i in range(9):
-            plt.subplot(3, 3, i + 1)
-            plt.axis('off')
-
-            plt.imshow(features[i].numpy().astype('uint8'))
-            plt.title(class_names[labels[i]])
-
-plot_dataset(dataset_train)
-plot_dataset(dataset_validation)
-plot_dataset(dataset_test)
-model = Sequential([
-    Rescaling(
-        1. / image_color_channel_size,
-        input_shape = image_shape
-    ),
-    Conv2D(16, 3, padding = 'same', activation = 'relu'),
-    MaxPooling2D(),
-    Conv2D(32, 3, padding = 'same', activation = 'relu'),
-    MaxPooling2D(),
-    Conv2D(64, 3, padding = 'same', activation = 'relu'),
-    MaxPooling2D(),
-    Flatten(),
-    Dense(128, activation = 'relu'),
-    Dense(1, activation = 'sigmoid')
-])
-
-model.compile(
-    optimizer = tf.keras.optimizers.Adam(learning_rate = learning_rate),
-    loss = tf.keras.losses.BinaryCrossentropy(),
-    metrics = ['accuracy']
-)
-
-model.summary()
-
-history = model.fit(
-    dataset_train,
-    validation_data = dataset_validation,
-    epochs = epochs
-)
-
-def plot_dataset_predictions(dataset):
-    features, labels = dataset.as_numpy_iterator().next()
-
-    predictions = model.predict_on_batch(features).flatten()
-    predictions = tf.where(predictions < 0.5, 0, 1)
-
-    print('Label:       %s' % labels)
-    print('predictions: %s' % predictions.numpy())
-
-    plt.gcf().clear()
-    plt.figure(figsize = (15,15))
-
-    for i in range(9):
-            plt.subplot(3, 3, i + 1)
-            plt.axis('off')
-
-            plt.imshow(features[i].astype('uint8'))
-            plt.title(class_names[predictions[i]])
-
-plot_dataset_predictions(dataset_test)
-model.save('./model2.keras')
+if __name__ == "__main__":
+    data_dir = "app/IA/data/processed"
+    output_model_path = "app/IA/data/models/basil_model.keras"
+    train(data_dir, output_model_path)
