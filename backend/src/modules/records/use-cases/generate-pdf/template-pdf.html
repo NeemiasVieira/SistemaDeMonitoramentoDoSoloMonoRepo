@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Relatório de Planta</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+      }
+      .header {
+        text-align: center;
+      }
+      .header .logo {
+        max-width: 100px;
+      }
+      .header h1 {
+        font-size: 24px;
+        margin: 10px 0;
+      }
+      .header h2 {
+        font-size: 18px;
+        color: #666;
+      }
+      .content {
+        margin-top: 20px;
+      }
+      .content p {
+        max-width: 420px;
+      }
+      .table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+      }
+      .table,
+      .table th,
+      .table td {
+        border: 1px solid #ddd;
+      }
+      .table th,
+      .table td {
+        padding: 8px;
+        text-align: left;
+      }
+      .table th {
+        background-color: #f4f4f4;
+      }
+      .comparison {
+        font-weight: 800;
+      }
+
+      .plantImage {
+        position: absolute;
+        top: 240px;
+        right: 50px;
+        height: 200px;
+        width: 235px;
+        border: solid #ccc 1px;
+        border-radius: 10px;
+        -webkit-box-shadow: 2px -1px 25px -6px rgba(0, 0, 0, 0.75);
+        -moz-box-shadow: 2px -1px 25px -6px rgba(0, 0, 0, 0.75);
+        box-shadow: 2px -1px 25px -6px rgba(0, 0, 0, 0.75);
+      }
+      .Saudavel {
+        background-color: #8cdf27;
+      }
+
+      .Excesso {
+        background-color: #ffd520;
+      }
+
+      .Deficiencia {
+        background-color: #f55;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <img src="https://sms.devneemiasvieira.com/assets/smslogo-Cd0Ejkoa.png" alt="Logo" class="logo" />
+      {{registro.imagem}}
+      <h1>Relatório de Planta</h1>
+      <h2>Data do Registro: {{dataDeRegistro}}</h2>
+    </div>
+    <div class="content">
+      <h3>Nome do Usuário: {{usuario.nome}}</h3>
+      <h3>Dados da Planta</h3>
+      <p><b>Nome:</b> {{planta.nome}}</p>
+      <p><b>Espécie:</b> {{especie.nome}}</p>
+      <p><b>Data de Plantação:</b> {{planta.dataDePlantacao}}</p>
+      <p><b>Diagnóstico por IA:</b> {{registro.diagnostico}}</p>
+      <h3>Comparação de Valores</h3>
+      <table class="table">
+        <tr>
+          <th>Parâmetro</th>
+          <th>Unidade</th>
+          <th>Espécie (Min)</th>
+          <th>Espécie (Max)</th>
+          <th>Registro</th>
+        </tr>
+        <tr>
+          <td>Nitrogênio</td>
+          <td>mg/kg</td>
+          <td>{{especie.parametros.nitrogenio.min}}</td>
+          <td>{{especie.parametros.nitrogenio.max}}</td>
+          <td class="comparison {{nitrogenioClass}}">{{registro.nitrogenio}}</td>
+        </tr>
+        <tr>
+          <td>Fósforo</td>
+          <td>mg/kg</td>
+          <td>{{especie.parametros.fosforo.min}}</td>
+          <td>{{especie.parametros.fosforo.max}}</td>
+          <td class="comparison {{fosforoClass}}">{{registro.fosforo}}</td>
+        </tr>
+        <tr>
+          <td>Potássio</td>
+          <td>mg/kg</td>
+          <td>{{especie.parametros.potassio.min}}</td>
+          <td>{{especie.parametros.potassio.max}}</td>
+          <td class="comparison {{potassioClass}}">{{registro.potassio}}</td>
+        </tr>
+        <tr>
+          <td>Luz</td>
+          <td>lux</td>
+          <td>{{especie.parametros.luz.min}}</td>
+          <td>{{especie.parametros.luz.max}}</td>
+          <td class="comparison {{luzClass}}">{{registro.luz}}</td>
+        </tr>
+        <tr>
+          <td>Umidade</td>
+          <td>%</td>
+          <td>{{especie.parametros.umidade.min}}</td>
+          <td>{{especie.parametros.umidade.max}}</td>
+          <td class="comparison {{umidadeClass}}">{{registro.umidade}}</td>
+        </tr>
+        <tr>
+          <td>Temperatura</td>
+          <td>°C</td>
+          <td>{{especie.parametros.temperatura.min}}</td>
+          <td>{{especie.parametros.temperatura.max}}</td>
+          <td class="comparison {{temperaturaClass}}">{{registro.temperatura}}</td>
+        </tr>
+        <tr>
+          <td>pH</td>
+          <td></td>
+          <td>{{especie.parametros.pH.min}}</td>
+          <td>{{especie.parametros.pH.max}}</td>
+          <td class="comparison {{pHClass}}">{{registro.pH}}</td>
+        </tr>
+      </table>
+      <h3>Identificadores</h3>
+      <table class="table">
+        <tr>
+          <th>Entidade</th>
+          <th>ID</th>
+        </tr>
+        <tr>
+          <td>Usuário</td>
+          <td>{{usuario.id}}</td>
+        </tr>
+        <tr>
+          <td>Planta</td>
+          <td>{{planta.id}}</td>
+        </tr>
+        <tr>
+          <td>Espécie</td>
+          <td>{{especie.id}}</td>
+        </tr>
+        <tr>
+          <td>Registro</td>
+          <td>{{registro.id}}</td>
+        </tr>
+      </table>
+    </div>
+  </body>
+</html>
